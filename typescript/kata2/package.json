@@ -1,0 +1,19 @@
+{
+  "name": "kata2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:dev": "tsc -w",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^3.1.2"
+  }
+}
