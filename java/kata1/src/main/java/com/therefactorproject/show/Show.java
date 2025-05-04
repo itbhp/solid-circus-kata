@@ -13,7 +13,7 @@ public sealed interface Show {
   }
 
   static Show createTightropeShow(String name, double ropeLength, boolean isBlindfolded) {
-    return new TightRopeSHow(name, ropeLength, isBlindfolded);
+    return new TightRopeShow(name, ropeLength, isBlindfolded);
   }
 
   static Show createTrapezeShow(String name, int performers) {
@@ -31,7 +31,7 @@ public sealed interface Show {
     }
   }
 
-  record TightRopeSHow(String name, Double ropeLength, boolean isBlindfolded) implements Show {
+  record TightRopeShow(String name, Double ropeLength, boolean isBlindfolded) implements Show {
     public double duration() {
       return (ropeLength != null ? ropeLength / 2.0 : 0.0)
         + (isBlindfolded ? 5.0 : 0.0);
