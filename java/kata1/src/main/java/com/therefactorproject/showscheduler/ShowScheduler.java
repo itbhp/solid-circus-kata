@@ -3,47 +3,33 @@ package com.therefactorproject.showscheduler;
 import com.therefactorproject.show.Show;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toMap;
 
 public class ShowScheduler {
-    private List<Show> shows;
+  private final Map<String, Show> showsByName;
 
-    public ShowScheduler(List<Show> shows) {
-        this.shows = shows;
+  public ShowScheduler(List<Show> shows) {
+    this.showsByName = shows.stream()
+      .collect(toMap(Show::name, Function.identity()));
+  }
+
+  public double calculateTotalDuration() {
+    var totalDuration = 0.0;
+
+    for (var show: showsByName.values()) {
+      totalDuration += show.duration();
     }
 
-    public double calculateTotalDuration() {
-        double totalDuration = 0;
+    return totalDuration;
+  }
 
-        for (Show show : shows) {
-            totalDuration += calculateShowDuration(show);
-        }
-
-        return totalDuration;
-    }
-
-    public double getShowDurationByName(String name) {
-        Show show = shows.stream()
-            .filter(s -> s.name.equals(name))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Show isn't scheduled"));
-
-        return calculateShowDuration(show);
-    }
-
-    private double calculateShowDuration(Show show) {
-        double showDuration;
-
-        if ("clown".equals(show.type)) {
-            showDuration = show.jokes != null ? show.jokes.size() * 5 : 0;
-        } else if ("tightrope".equals(show.type)) {
-            showDuration = (show.ropeLength != null ? show.ropeLength / 2 : 0) 
-                         + (Boolean.TRUE.equals(show.isBlindfolded) ? 5 : 0);
-        } else if ("trapeze".equals(show.type)) {
-            showDuration = show.performers != null ? show.performers * 6 : 0;
-        } else {
-            showDuration = 0;
-        }
-
-        return showDuration;
-    }
+  public double getShowDurationByName(String name) {
+    return Optional.ofNullable(showsByName.get(name))
+      .map(Show::duration)
+      .orElseThrow(() -> new IllegalArgumentException("Show isn't scheduled"));
+  }
 }
