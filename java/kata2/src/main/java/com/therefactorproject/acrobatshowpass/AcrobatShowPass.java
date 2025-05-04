@@ -1,30 +1,52 @@
 package com.therefactorproject.acrobatshowpass;
 
+import java.util.Locale;
+
+import static java.util.Locale.US;
+
 public class AcrobatShowPass {
-    private final String name;
-    private final double basePrice;
-    private final double taxRate;
-    private double tax;
-    private double totalPrice;
+  private final String name;
+  private final double basePrice;
+  private final double taxRate;
 
-    public AcrobatShowPass(String name, double basePrice, double taxRate) {
-        this.name = name;
-        this.basePrice = basePrice;
-        this.taxRate = taxRate;
-    }
+  public AcrobatShowPass(String name, double basePrice, double taxRate) {
+    this.name = name;
+    this.basePrice = basePrice;
+    this.taxRate = taxRate;
+  }
 
-    public void printAndArchive(int printerId) {
-        System.out.println("🎟️ Printing on Acrobat Show printer #" + printerId);
-        System.out.println("Show: " + name);
+  public void printAndArchive(int printerId) {
 
-        this.tax = this.basePrice * (this.taxRate / 100);
-        this.totalPrice = this.basePrice + this.tax;
+    var receipt = receiptFrom(this.basePrice, this.taxRate);
 
-        System.out.println("======================");
-        System.out.printf(java.util.Locale.US, "Base price: %.2f€\n", basePrice);
-        System.out.printf(java.util.Locale.US, "Tax: %.2f€\n", tax);
-        System.out.printf(java.util.Locale.US, "TOTAL: %.2f€\n", totalPrice);
+    println("🎟️ Printing on Acrobat Show printer #" + printerId);
+    println("Show: " + name);
 
-        System.out.println("🤸 Archiving Acrobat Show pass of " + name + " in the circus records...");
-    }
+    println("======================");
+    printf(US, "Base price: %.2f€\n", receipt.basePrice());
+    printf(US, "Tax: %.2f€\n", receipt.tax());
+    printf(US, "TOTAL: %.2f€\n", receipt.totalPrice());
+
+    archive();
+  }
+
+  private static Receipt receiptFrom(double basePriceValue, double taxRateValue) {
+    double taxValue = basePriceValue * (taxRateValue / 100);
+    double totalPriceValue = basePriceValue + taxValue;
+    return new Receipt(taxValue, totalPriceValue, basePriceValue, taxRateValue);
+  }
+
+  private record Receipt(double tax, double totalPrice, double basePrice, double taxRate){}
+
+  private void archive() {
+    System.out.println("🤸 Archiving Acrobat Show pass of " + name + " in the circus records...");
+  }
+
+  private void printf(Locale locale, String format, double totalPrice) {
+    System.out.printf(locale, format, totalPrice);
+  }
+
+  private static void println(String x) {
+    System.out.println(x);
+  }
 }
